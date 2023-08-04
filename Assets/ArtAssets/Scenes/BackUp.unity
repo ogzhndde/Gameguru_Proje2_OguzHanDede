@@ -4789,6 +4789,7 @@ MonoBehaviour:
   cMCamEnum: 0
   CMMain: {fileID: 0}
   CamList: []
+  AllCam: []
 --- !u!1 &938012663
 GameObject:
   m_ObjectHideFlags: 0
@@ -8536,7 +8537,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1502834801
 Transform:
   m_ObjectHideFlags: 0
@@ -10028,6 +10029,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   data: {fileID: 11400000, guid: d9c29a7840a6a4bceb1e1f3109622fda, type: 2}
   _isGameStarted: 0
+  _canDividePlatform: 1
 --- !u!4 &1692582549
 Transform:
   m_ObjectHideFlags: 0

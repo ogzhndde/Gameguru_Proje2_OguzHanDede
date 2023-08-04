@@ -14,6 +14,7 @@ public class GameManager : InstanceManager<GameManager>
     [Space(10)]
     [Header("Bools")]
     public bool _isGameStarted = false;
+    public bool _canDividePlatform = true;
 
 
     void Awake()
@@ -40,15 +41,22 @@ public class GameManager : InstanceManager<GameManager>
     private void OnEnable()
     {
         EventManager.AddHandler(GameEvent.OnStart, OnStart);
+        EventManager.AddHandler(GameEvent.OnGameFail, OnGameFail);
     }
 
     private void OnDisable()
     {
         EventManager.RemoveHandler(GameEvent.OnStart, OnStart);
+        EventManager.RemoveHandler(GameEvent.OnGameFail, OnGameFail);
     }
 
     private void OnStart()
     {
        _isGameStarted = true;
+    }
+
+    private void OnGameFail()
+    {
+       _canDividePlatform = false;
     }
 }

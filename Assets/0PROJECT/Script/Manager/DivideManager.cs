@@ -10,11 +10,16 @@ public class DivideManager : InstanceManager<DivideManager>
     [Header("Definitions")]
     [SerializeField] private GameObject CurrentMovingPlatform;
 
-    [SerializeField] private List<GameObject> AllPlatforms = new List<GameObject>();
+    public List<GameObject> AllPlatforms = new List<GameObject>();
 
     [SerializeField] private Transform reference;
     [SerializeField] private MeshRenderer referenceMesh;
 
+
+    private void Awake()
+    {
+        manager = FindObjectOfType<GameManager>();
+    }
 
 
     private void Divide(float distance, ref GameObject standPlatform, ref GameObject fallingPlatform)
@@ -70,11 +75,17 @@ public class DivideManager : InstanceManager<DivideManager>
 
     private void CreateNewPlatform(GameObject nextPlatform)
     {
-        var newPlatform = Instantiate(nextPlatform, nextPlatform.transform.position + new Vector3(0, 0, nextPlatform.transform.localScale.z), Quaternion.identity);
+        var comingSide = nextPlatform.GetComponent<Platform>().directionEnum;
+        var xOffset = comingSide == Direction.Left ? -1 : 1;
+        var distanceFromNextPlatform = xOffset * 3.5f;
+
+        var newPosition = nextPlatform.transform.position + new Vector3(distanceFromNextPlatform, 0, nextPlatform.transform.localScale.z);
+        var newPlatform = Instantiate(nextPlatform, newPosition, Quaternion.identity);
 
         CurrentMovingPlatform = newPlatform;
 
-        //PLATFORM SAG SOL ISLEMLERI MATERYAL FALAN BURAYA YAZILACAK
+        Platform platform = newPlatform.GetComponent<Platform>();
+        platform.SpawnProcess(comingSide);
     }
 
 
@@ -101,20 +112,25 @@ public class DivideManager : InstanceManager<DivideManager>
 
     private void OnDivide()
     {
+        if (!manager._canDividePlatform) return;
+
         reference = CurrentMovingPlatform.transform;
         referenceMesh = reference.GetComponent<MeshRenderer>();
+        Transform lastPlatform = AllPlatforms[^1].transform;
+
+        var distance = lastPlatform.position.x - reference.position.x;
+
+        if (distance > reference.localScale.x)
+        {
+            CurrentMovingPlatform.GetComponent<Platform>().FallingProcess();
+            EventManager.Broadcast(GameEvent.OnGameFail);
+            return;
+        }
 
         var stand = Instantiate(reference.gameObject, reference.position, Quaternion.identity);
         var falling = Instantiate(reference.gameObject, reference.position, Quaternion.identity);
 
-        Transform lastPlatform = AllPlatforms[^1].transform;
-
-        var distance = lastPlatform.position.x - reference.position.x;
-        Debug.Log(distance);
-
         Divide(distance, ref stand, ref falling);
-
-
 
         stand.GetComponent<Platform>().StandProcess();
         falling.GetComponent<Platform>().FallingProcess();

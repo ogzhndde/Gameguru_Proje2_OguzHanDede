@@ -11,23 +11,20 @@ public enum CMCam
 public class CameraManager : InstanceManager<CameraManager>
 {
     public CMCam cMCamEnum;
-    public GameObject CMMain;
+    public GameObject CMMain, CMFinish;
     public List<GameObject> CamList = new List<GameObject>();
-    public List<GameObject> AllCam = new List<GameObject>();
 
     void Start()
     {
-        CamListCheck();
+        SetCams();
 
         InvokeRepeating("CamControl", .1f, .1f);
     }
 
-    void CamListCheck()
+    void SetCams()
     {
-        for (int i = 0; i < AllCam.Count; i++)
-        {
-            CamList.Add(AllCam[i]);
-        }
+        CamList.Add(CMMain);
+        CamList.Add(CMFinish);
     }
 
     public void CamControl()
@@ -36,6 +33,10 @@ public class CameraManager : InstanceManager<CameraManager>
         {
             case CMCam.CMMain:
                 CamUpdate(CMMain);
+                break;
+
+            case CMCam.CMFinish:
+                CamUpdate(CMFinish);
                 break;
         }
     }
