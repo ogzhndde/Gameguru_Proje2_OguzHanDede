@@ -6,6 +6,7 @@ public enum GameEvent
     OnStart,
     OnDivide,
     OnGameFail,
+    OnFinish,
 
 
 

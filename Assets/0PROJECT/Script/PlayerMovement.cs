@@ -4,22 +4,13 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    GameManager manager;
-    DivideManager divideManager;
-    GameData data;
+    PlayerManager pManager;
 
-    [Header("Definitions")]
-    [SerializeField] private GameObject TargetPlatform;
-    [SerializeField] private float speed;
-    [SerializeField] private float xSensitivity;
 
 
     void Awake()
     {
-        manager = FindObjectOfType<GameManager>();
-        divideManager = FindObjectOfType<DivideManager>();
-        data = manager.data;
-
+        pManager = GetComponent<PlayerManager>();
     }
 
     void Start()
@@ -35,17 +26,22 @@ public class PlayerMovement : MonoBehaviour
 
     private void Move()
     {
-        if (!manager._isGameStarted) return;
+        if (!pManager.manager._isGameStarted) return;
 
-        float xMovement = Mathf.Lerp(transform.position.x, TargetPlatform != null ? TargetPlatform.transform.position.x : transform.position.x, Time.deltaTime * xSensitivity);
-        float zMovement = speed * Time.deltaTime;
+        var TargetPlatform = pManager.structMovement.TargetPlatform;
+
+        float xMovement = Mathf.Lerp(transform.position.x,
+                                        TargetPlatform != null ?
+                                        TargetPlatform.transform.position.x : transform.position.x,
+                                        Time.deltaTime * pManager.structMovement.xSensitivity);
+        float zMovement = pManager.structMovement.speed * Time.deltaTime;
 
         transform.position = new Vector3(xMovement, transform.position.y, transform.position.z + zMovement);
     }
 
     private void SetTargetPlatform()
     {
-        List<GameObject> allPlatforms = divideManager.AllPlatforms;
+        List<GameObject> allPlatforms = pManager.divideManager.AllPlatforms;
 
         float closestDistance = Mathf.Infinity;
         GameObject selectedPlatform = null;
@@ -65,11 +61,11 @@ public class PlayerMovement : MonoBehaviour
 
         if (selectedPlatform != null)
         {
-            TargetPlatform = selectedPlatform;
+            pManager.structMovement.TargetPlatform = selectedPlatform;
         }
         else
         {
-            TargetPlatform = null;
+            pManager.structMovement.TargetPlatform = null;
         }
 
     }

@@ -2680,7 +2680,9 @@ GameObject:
   - component: {fileID: 604125042}
   - component: {fileID: 604125045}
   - component: {fileID: 604125044}
+  - component: {fileID: 604125047}
   - component: {fileID: 604125043}
+  - component: {fileID: 604125046}
   m_Layer: 0
   m_Name: Chibi_Pos
   m_TagString: Untagged
@@ -2716,9 +2718,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d5d5858f9ddbd54d8caf595e0948d54, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TargetPlatform: {fileID: 0}
-  speed: 1.5
-  xSensitivity: 2
 --- !u!54 &604125044
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -2748,6 +2747,42 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.4495293, y: 1.2031296, z: 0.35164213}
   m_Center: {x: 0, y: 0.609721, z: 7.7961463e-16}
+--- !u!114 &604125046
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 604125041}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 50b0fa44479707a4bb184dea4ccd21a8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &604125047
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 604125041}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b1376c9edf4e13c4f9bd994b67ddcf00, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerStateEnum: 0
+  manager: {fileID: 0}
+  divideManager: {fileID: 0}
+  data: {fileID: 0}
+  playerMovement: {fileID: 0}
+  playerAnimation: {fileID: 0}
+  structMovement:
+    TargetPlatform: {fileID: 0}
+    speed: 1
+    xSensitivity: 1
+  structAnimation:
+    anim: {fileID: 5062883109654775314}
 --- !u!1 &604831775
 GameObject:
   m_ObjectHideFlags: 0
@@ -9441,7 +9476,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_BindingMode: 1
   m_FollowOffset: {x: 2.11, y: 5.34, z: -5.2400002}
-  m_XDamping: 1
+  m_XDamping: 1.5
   m_YDamping: 1
   m_ZDamping: 1
   m_AngularDampingMode: 0
@@ -11571,6 +11606,11 @@ Transform:
 --- !u!4 &5062883109654775313 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5646447060418037118, guid: 8ebf841af362818409cf000d8f1a2345, type: 3}
+  m_PrefabInstance: {fileID: 585130342517064559}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &5062883109654775314 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 1782327572533206788, guid: 8ebf841af362818409cf000d8f1a2345, type: 3}
   m_PrefabInstance: {fileID: 585130342517064559}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &5199958195870355088

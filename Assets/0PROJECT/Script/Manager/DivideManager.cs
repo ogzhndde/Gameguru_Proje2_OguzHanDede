@@ -120,7 +120,7 @@ public class DivideManager : InstanceManager<DivideManager>
 
         var distance = lastPlatform.position.x - reference.position.x;
 
-        if (distance > reference.localScale.x)
+        if (Mathf.Abs(distance) > reference.localScale.x)
         {
             CurrentMovingPlatform.GetComponent<Platform>().FallingProcess();
             EventManager.Broadcast(GameEvent.OnGameFail);
