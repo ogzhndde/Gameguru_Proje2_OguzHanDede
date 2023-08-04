@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class InputController : MonoBehaviour, IPointerDownHandler, IDragHandler, IPointerUpHandler
+public class InputController : MonoBehaviour, IPointerDownHandler
 {
-    GameManager manager;
-    GameData data;
+    private GameManager manager;
+    private DivideManager divideManager;
+    private GameData data;
 
     private void Awake()
     {
@@ -14,10 +15,6 @@ public class InputController : MonoBehaviour, IPointerDownHandler, IDragHandler,
         data = manager.data;
     }
 
-    private void Start()
-    {
-
-    }
 
     void Update()
     {
@@ -27,16 +24,14 @@ public class InputController : MonoBehaviour, IPointerDownHandler, IDragHandler,
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        
+        if (!manager._isGameStarted)
+        {
+            manager._isGameStarted = true;
+            return;
+        }
+
+        EventManager.Broadcast(GameEvent.OnDivide);
+
     }
 
-    public void OnDrag(PointerEventData eventData)
-    {
-
-    }
-
-    public void OnPointerUp(PointerEventData eventData)
-    {
-        
-    }
 }

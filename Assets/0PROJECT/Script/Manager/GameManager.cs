@@ -8,8 +8,12 @@ using System.Linq;
 public class GameManager : InstanceManager<GameManager>
 {
     public GameData data;
+
     
-    // [Header("Definitons")]
+
+    [Space(10)]
+    [Header("Bools")]
+    public bool _isGameStarted = false;
 
 
     void Awake()
@@ -21,7 +25,7 @@ public class GameManager : InstanceManager<GameManager>
 
     void Start()
     {
-        
+
     }
 
     void Update()
