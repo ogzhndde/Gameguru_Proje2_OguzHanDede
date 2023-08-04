@@ -3,39 +3,58 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using NaughtyAttributes;
+using System;
 
 [CreateAssetMenu(fileName = "Data", menuName = "ScriptableObject/GameData", order = 1)]
 public class GameData : ScriptableObject
 {
-    [Header("Float & Int")]
-    [SerializeField] private float totalMoney; //################## TOTAL MONEY
-    public float TotalMoney
+    [SerializeField] private float totalCoin; //################## TOTAL COIN
+    public float TotalCoin
     {
-        get { return totalMoney; }
+        get { return totalCoin; }
         set
         {
-            if (value < 0) totalMoney = 0;
-            else totalMoney = value;
+            if (value < 0) totalCoin = 0;
+            else totalCoin = value;
         }
     }
 
-    [HorizontalLine]
-    public float deneme;
+    [Space(5)]
+    [Header("Structs")]
+    public Values values;
+    public Bools bools;
+    public Lists lists;
+
+
+    [Serializable]
+    public struct Values
+    {
+        public int LevelCount;
+        public int perfectShootCounter;
+        public int LongestPerfectShoot;
+    }
+
+    [Serializable]
+    public struct Bools
+    {
+        public bool _isPerfectShoot;
+    }  
+    
+    [Serializable]
+    public struct Lists
+    {
+        public List<int> LevelPlatformCounts;
+    }
 
 
 
     [Button]
     void ResetData()
     {
-
+        values.perfectShootCounter = 0;
+        
+        bools._isPerfectShoot = false;
     }
-
-    [Button]
-    void FullSource()
-    {
-        TotalMoney = 10000f;
-    }
-
 
     [Button]
     void ClearPlayerPrefs()

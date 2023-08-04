@@ -65,15 +65,28 @@ public class CameraManager : InstanceManager<CameraManager>
     // }
 
     //########################################    EVENTS    ###################################################################
-
-    private void OnEnable()
+    void OnEnable()
     {
-        // EventManager.AddHandler(GameEvent.OnStart, OnStart);
+        EventManager.AddHandler(GameEvent.OnFinish, OnFinish);
+        EventManager.AddHandler(GameEvent.OnGenerateLevel, OnGenerateLevel);
     }
 
-    private void OnDisable()
+    void OnDisable()
     {
-        // EventManager.RemoveHandler(GameEvent.OnStart, OnStart);
+        EventManager.RemoveHandler(GameEvent.OnFinish, OnFinish);
+        EventManager.RemoveHandler(GameEvent.OnGenerateLevel, OnGenerateLevel);
+
+    }
+
+    private void OnGenerateLevel()
+    {
+        cMCamEnum = CMCam.CMMain;
+       
+    }
+
+    private void OnFinish()
+    {
+        cMCamEnum = CMCam.CMFinish;
     }
 
 }

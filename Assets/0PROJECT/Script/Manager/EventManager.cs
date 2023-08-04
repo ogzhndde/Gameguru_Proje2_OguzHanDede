@@ -5,10 +5,14 @@ public enum GameEvent
 {
     OnStart,
     OnDivide,
-    OnGameFail,
     OnFinish,
 
+    OnGenerateLevel,
 
+    //SHOT EVENTS
+    OnPerfectShoot,
+    OnNormalShoot,
+    OnMissShoot,
 
     //SOUND EVENTS
     OnPlaySound,

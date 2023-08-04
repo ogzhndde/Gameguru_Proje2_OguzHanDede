@@ -50,12 +50,14 @@ public class PlayerManager : MonoBehaviour
     {
         EventManager.AddHandler(GameEvent.OnStart, OnStart);
         EventManager.AddHandler(GameEvent.OnFinish, OnFinish);
+        EventManager.AddHandler(GameEvent.OnGenerateLevel, OnGenerateLevel);
     }
 
     private void OnDisable()
     {
         EventManager.RemoveHandler(GameEvent.OnStart, OnStart);
-        EventManager.AddHandler(GameEvent.OnFinish, OnFinish);
+        EventManager.RemoveHandler(GameEvent.OnFinish, OnFinish);
+        EventManager.RemoveHandler(GameEvent.OnGenerateLevel, OnGenerateLevel);
     }
 
     private void OnStart()
@@ -66,6 +68,12 @@ public class PlayerManager : MonoBehaviour
     private void OnFinish()
     {
         playerStateEnum = PlayerState.FinishPhase;
+    }
+
+    
+    private void OnGenerateLevel()
+    {
+        playerStateEnum = PlayerState.IdlePhase;
     }
 
 }

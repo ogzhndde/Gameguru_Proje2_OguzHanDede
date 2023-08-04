@@ -43,9 +43,8 @@ public class AudioManager : MonoBehaviour
         audioPlay.PlayOneShot(audioPlay.clip);
     }
 
-    private void OnPlaySoundPitch(object value, object volume, object pitch)
+    private void OnPlaySoundPitch(object value, object pitch)
     {
-        audioPlay.volume = (float)volume;
         audioPlay.pitch = (float)pitch;
 
         audioPlay.clip = Resources.Load<AudioClip>((string)value);

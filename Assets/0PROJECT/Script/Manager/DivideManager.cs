@@ -7,11 +7,12 @@ public class DivideManager : InstanceManager<DivideManager>
 {
     GameManager manager;
 
-    [Header("Definitions")]
-    [SerializeField] private GameObject CurrentMovingPlatform;
-
     public List<GameObject> AllPlatforms = new List<GameObject>();
 
+    [Space(10)]
+    [Header("Definitions")]
+    [SerializeField] private GameObject CurrentMovingPlatform;
+    [SerializeField] private float perfectShotTolerance = 0.1f;
     [SerializeField] private Transform reference;
     [SerializeField] private MeshRenderer referenceMesh;
 
@@ -52,7 +53,8 @@ public class DivideManager : InstanceManager<DivideManager>
         //LISTE ISLEMLERI
         AllPlatforms.Add(stand.gameObject);
 
-        CreateNewPlatform(stand.gameObject);
+        if (manager._canCreatePlatform)
+            CreateNewPlatform(stand.gameObject);
     }
 
     private Vector3 GetPositionEdge(MeshRenderer mesh, Direction direction)
@@ -113,6 +115,8 @@ public class DivideManager : InstanceManager<DivideManager>
     private void OnDivide()
     {
         if (!manager._canDividePlatform) return;
+        if(!CurrentMovingPlatform) return;
+        manager.ShootCounter();
 
         reference = CurrentMovingPlatform.transform;
         referenceMesh = reference.GetComponent<MeshRenderer>();
@@ -120,21 +124,49 @@ public class DivideManager : InstanceManager<DivideManager>
 
         var distance = lastPlatform.position.x - reference.position.x;
 
+        #region Miss Shot
         if (Mathf.Abs(distance) > reference.localScale.x)
         {
             CurrentMovingPlatform.GetComponent<Platform>().FallingProcess();
-            EventManager.Broadcast(GameEvent.OnGameFail);
+            EventManager.Broadcast(GameEvent.OnMissShoot);
             return;
         }
+        #endregion
+
+        #region Perfect Shot
+        if (Mathf.Abs(distance) <= perfectShotTolerance)
+        {
+            distance = 0;
+            reference.transform.position = new Vector3(lastPlatform.transform.position.x,
+                                                        reference.transform.position.y,
+                                                        reference.transform.position.z);
+
+            EventManager.Broadcast(GameEvent.OnPerfectShoot);
+        }
+        #endregion
 
         var stand = Instantiate(reference.gameObject, reference.position, Quaternion.identity);
         var falling = Instantiate(reference.gameObject, reference.position, Quaternion.identity);
 
         Divide(distance, ref stand, ref falling);
 
+        //MAKE PROCESS ON PIECES CREATED
+        #region Piece Process 
         stand.GetComponent<Platform>().StandProcess();
-        falling.GetComponent<Platform>().FallingProcess();
         reference.GetComponent<Platform>().DestroyProcess();
+
+        if (distance != 0) //NORMAL SHOOT
+        {
+            falling.GetComponent<Platform>().FallingProcess();
+            EventManager.Broadcast(GameEvent.OnNormalShoot);
+        }
+        else //PERFECT SHOOT
+        {
+            falling.GetComponent<Platform>().DestroyProcess();
+        }
+        #endregion 
+
+
 
     }
 
