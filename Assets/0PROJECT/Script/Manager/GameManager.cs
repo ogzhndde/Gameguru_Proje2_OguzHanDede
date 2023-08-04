@@ -9,7 +9,7 @@ public class GameManager : InstanceManager<GameManager>
 {
     public GameData data;
 
-    
+
 
     [Space(10)]
     [Header("Bools")]
@@ -25,7 +25,7 @@ public class GameManager : InstanceManager<GameManager>
 
     void Start()
     {
-
+        
     }
 
     void Update()
@@ -39,12 +39,16 @@ public class GameManager : InstanceManager<GameManager>
 
     private void OnEnable()
     {
-        // EventManager.AddHandler(GameEvent.OnStart, OnStart);
+        EventManager.AddHandler(GameEvent.OnStart, OnStart);
     }
 
     private void OnDisable()
     {
-        // EventManager.RemoveHandler(GameEvent.OnStart, OnStart);
+        EventManager.RemoveHandler(GameEvent.OnStart, OnStart);
     }
 
+    private void OnStart()
+    {
+       _isGameStarted = true;
+    }
 }

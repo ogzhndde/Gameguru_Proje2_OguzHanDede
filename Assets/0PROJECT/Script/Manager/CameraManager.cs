@@ -4,7 +4,8 @@ using UnityEngine;
 
 public enum CMCam
 {
-    CMMain
+    CMMain,
+    CMFinish
 }
 
 public class CameraManager : InstanceManager<CameraManager>
@@ -12,12 +13,21 @@ public class CameraManager : InstanceManager<CameraManager>
     public CMCam cMCamEnum;
     public GameObject CMMain;
     public List<GameObject> CamList = new List<GameObject>();
+    public List<GameObject> AllCam = new List<GameObject>();
 
     void Start()
     {
-        CamList.Add(CMMain);
+        CamListCheck();
 
         InvokeRepeating("CamControl", .1f, .1f);
+    }
+
+    void CamListCheck()
+    {
+        for (int i = 0; i < AllCam.Count; i++)
+        {
+            CamList.Add(AllCam[i]);
+        }
     }
 
     public void CamControl()

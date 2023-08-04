@@ -14,33 +14,26 @@ public class DivideManager : InstanceManager<DivideManager>
 
     [SerializeField] private Transform reference;
     [SerializeField] private MeshRenderer referenceMesh;
-    [SerializeField] private Transform falling;
-    [SerializeField] private Transform stand;
 
-    [SerializeField] private Transform Last;
 
-    public float testValue;
 
-    [ContextMenu("Test")]
-    private void Test()
+    private void Divide(float distance, ref GameObject standPlatform, ref GameObject fallingPlatform)
     {
-        Divide(Last.position.x - reference.position.x);
-    }
+        Transform stand = standPlatform.transform;
+        Transform falling = fallingPlatform.transform;
 
-    private void Divide(float value)
-    {
-        bool isFirstFalling = value > 0;
+        bool isFirstFalling = distance > 0;
 
-        //Size
+        //OLCU AYARI
         var fallingSize = reference.localScale;
-        fallingSize.x = Mathf.Abs(value);
+        fallingSize.x = Mathf.Abs(distance);
         falling.localScale = fallingSize;
 
         var standSize = reference.localScale;
-        standSize.x = reference.localScale.x - Mathf.Abs(value);
+        standSize.x = reference.localScale.x - Mathf.Abs(distance);
         stand.localScale = standSize;
 
-        //Position
+        //POZISYON AYARI
         var fallingPosition = GetPositionEdge(referenceMesh, isFirstFalling ? Direction.Left : Direction.Right);
         var fallingMultiply = (isFirstFalling ? 1 : -1);
         fallingPosition.x += (fallingSize.x / 2) * fallingMultiply;
@@ -50,6 +43,11 @@ public class DivideManager : InstanceManager<DivideManager>
         var standMultiply = (!isFirstFalling ? 1 : -1);
         standPosition.x += (standSize.x / 2) * standMultiply;
         stand.position = standPosition;
+
+        //LISTE ISLEMLERI
+        AllPlatforms.Add(stand.gameObject);
+
+        CreateNewPlatform(stand.gameObject);
     }
 
     private Vector3 GetPositionEdge(MeshRenderer mesh, Direction direction)
@@ -68,6 +66,15 @@ public class DivideManager : InstanceManager<DivideManager>
         }
 
         return position;
+    }
+
+    private void CreateNewPlatform(GameObject nextPlatform)
+    {
+        var newPlatform = Instantiate(nextPlatform, nextPlatform.transform.position + new Vector3(0, 0, nextPlatform.transform.localScale.z), Quaternion.identity);
+
+        CurrentMovingPlatform = newPlatform;
+
+        //PLATFORM SAG SOL ISLEMLERI MATERYAL FALAN BURAYA YAZILACAK
     }
 
 
@@ -89,12 +96,30 @@ public class DivideManager : InstanceManager<DivideManager>
 
     private void OnStart()
     {
-        throw new NotImplementedException();
+        CreateNewPlatform(AllPlatforms[^1]);
     }
 
     private void OnDivide()
     {
-        throw new NotImplementedException();
+        reference = CurrentMovingPlatform.transform;
+        referenceMesh = reference.GetComponent<MeshRenderer>();
+
+        var stand = Instantiate(reference.gameObject, reference.position, Quaternion.identity);
+        var falling = Instantiate(reference.gameObject, reference.position, Quaternion.identity);
+
+        Transform lastPlatform = AllPlatforms[^1].transform;
+
+        var distance = lastPlatform.position.x - reference.position.x;
+        Debug.Log(distance);
+
+        Divide(distance, ref stand, ref falling);
+
+
+
+        stand.GetComponent<Platform>().StandProcess();
+        falling.GetComponent<Platform>().FallingProcess();
+        reference.GetComponent<Platform>().DestroyProcess();
+
     }
 
 }

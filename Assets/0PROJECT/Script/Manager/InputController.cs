@@ -26,7 +26,7 @@ public class InputController : MonoBehaviour, IPointerDownHandler
     {
         if (!manager._isGameStarted)
         {
-            manager._isGameStarted = true;
+            EventManager.Broadcast(GameEvent.OnStart);
             return;
         }
 
