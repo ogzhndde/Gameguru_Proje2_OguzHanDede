@@ -20,6 +20,7 @@ public class Collectable : MonoBehaviour
 
     void Update()
     {
+        //FOLLOW TARGET PLATFORM
         FollowTarget();
     }
 
@@ -46,10 +47,10 @@ public class Collectable : MonoBehaviour
         //SPAWN PARTICLE
         Instantiate(CollectableParticle, transform.position, Quaternion.identity);
 
-        //SPAWN 3D TMP TO SHOW EARN AMOUNT
+        //SPAWN 3D TEXTMESHPRO TO SHOW EARN AMOUNT
         var earnAmount = Instantiate(Resources.Load("EarnAmount") as GameObject, transform.position, Quaternion.identity);
         earnAmount.GetComponent<EarnAmount>().SetEarnAmount(CollValue);
-        
+
         //SAVE EARN AMOUNT TO GAME DATA
         GameManager.Instance.data.TotalCoin += CollValue;
 

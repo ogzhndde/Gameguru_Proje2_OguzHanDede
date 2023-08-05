@@ -7,7 +7,6 @@ using DG.Tweening;
 public class DivideManager : InstanceManager<DivideManager>
 {
     GameManager manager;
-
     public List<GameObject> AllPlatforms = new List<GameObject>();
 
     [Space(10)]
@@ -22,6 +21,7 @@ public class DivideManager : InstanceManager<DivideManager>
         manager = FindObjectOfType<GameManager>();
     }
 
+    // ALL DIVIDE PROCESSES
     private void Divide(float distance, ref GameObject standPlatform, ref GameObject fallingPlatform)
     {
         Transform stand = standPlatform.transform;
@@ -29,48 +29,43 @@ public class DivideManager : InstanceManager<DivideManager>
 
         bool isFirstFalling = distance > 0;
 
-        //OLCU AYARI
-        var fallingSize = reference.localScale;
-        fallingSize.x = Mathf.Abs(distance);
-        falling.localScale = fallingSize;
+        // SCALE
+        Vector3 referenceScale = reference.localScale;
+        float fallingScaleX = Mathf.Abs(distance);
+        float standScaleX = referenceScale.x - fallingScaleX;
+        falling.localScale = new Vector3(fallingScaleX, referenceScale.y, referenceScale.z);
+        stand.localScale = new Vector3(standScaleX, referenceScale.y, referenceScale.z);
 
-        var standSize = reference.localScale;
-        standSize.x = reference.localScale.x - Mathf.Abs(distance);
-        stand.localScale = standSize;
-
-        //POZISYON AYARI
-        var fallingPosition = GetPositionEdge(referenceMesh, isFirstFalling ? Direction.Left : Direction.Right);
-        var fallingMultiply = (isFirstFalling ? 1 : -1);
-        fallingPosition.x += (fallingSize.x / 2) * fallingMultiply;
+        // POSITION 
+        Vector3 fallingPosition = GetPositionEdge(referenceMesh, isFirstFalling ? Direction.Left : Direction.Right);
+        float fallingOffset = fallingScaleX / 2f;
+        fallingPosition.x += isFirstFalling ? fallingOffset : -fallingOffset;
         falling.position = fallingPosition;
 
-        var standPosition = GetPositionEdge(referenceMesh, !isFirstFalling ? Direction.Left : Direction.Right);
-        var standMultiply = (!isFirstFalling ? 1 : -1);
-        standPosition.x += (standSize.x / 2) * standMultiply;
+        Vector3 standPosition = GetPositionEdge(referenceMesh, !isFirstFalling ? Direction.Left : Direction.Right);
+        float standOffset = standScaleX / 2f;
+        standPosition.x += !isFirstFalling ? standOffset : -standOffset;
         stand.position = standPosition;
 
-        //LISTE ISLEMLERI
+        // PLATFORM LIST OPERATIONS
         AllPlatforms.Add(stand.gameObject);
 
         if (manager._canCreatePlatform)
             CreateNewPlatform(stand.gameObject);
     }
 
+    //DETECT THE LIMITS OF THE MESH
     private Vector3 GetPositionEdge(MeshRenderer mesh, Direction direction)
     {
         var extents = mesh.bounds.extents;
         var position = mesh.transform.position;
 
-        switch (direction)
+        position.x += direction switch
         {
-            case Direction.Left:
-                position.x += -extents.x;
-                break;
-            case Direction.Right:
-                position.x += extents.x;
-                break;
-        }
-
+            Direction.Left => -extents.x,
+            Direction.Right => extents.x,
+            _ => 0
+        };
         return position;
     }
 
@@ -83,19 +78,19 @@ public class DivideManager : InstanceManager<DivideManager>
         var newPosition = nextPlatform.transform.position + new Vector3(distanceFromNextPlatform, 0, nextPlatform.transform.localScale.z);
         var newPlatform = Instantiate(nextPlatform, newPosition, Quaternion.identity);
 
+        //UPDATE CURRENT MOVING PLATFORM
         CurrentMovingPlatform = newPlatform;
 
+        //NECESSARY PROCEDURES ARE TAKING ON THE SPAWNED PLATFORM
         Platform platform = newPlatform.GetComponent<Platform>();
         platform.SpawnProcess(comingSide);
     }
-
-
-
 
     //########################################    EVENTS    ###################################################################
 
     private void OnEnable()
     {
+        //DEFINE EVENTS USED IN THIS SCRIPT
         EventManager.AddHandler(GameEvent.OnStart, OnStart);
         EventManager.AddHandler(GameEvent.OnDivide, OnDivide);
         EventManager.AddHandler(GameEvent.OnPlatformListReset, OnPlatformListReset);
@@ -115,17 +110,21 @@ public class DivideManager : InstanceManager<DivideManager>
 
     private void OnDivide()
     {
-        if (!manager._canDividePlatform) return;
-        if (!CurrentMovingPlatform) return;
+        if (!manager._canDividePlatform || !CurrentMovingPlatform) return;
+
+        //COUNT ON EVERY DIVIDE
         manager.ShootCounter();
 
+        //DEFINE REFERENCE
         reference = CurrentMovingPlatform.transform;
         referenceMesh = reference.GetComponent<MeshRenderer>();
         Transform lastPlatform = AllPlatforms[^1].transform;
 
+        //CHECK DISTANCE BETWEEN REFERENCE AND LAST STABLE PLATFORM
         var distance = lastPlatform.position.x - reference.position.x;
 
         #region Miss Shot
+        //IF DISTANCE IS LARGER THAN PLATFORM, YOU MISS SHOOT
         if (Mathf.Abs(distance) > reference.localScale.x)
         {
             CurrentMovingPlatform.GetComponent<Platform>().FallingProcess();
@@ -135,6 +134,7 @@ public class DivideManager : InstanceManager<DivideManager>
         #endregion
 
         #region Perfect Shot
+        //IF DISTANCE IS SMALLER THAN TOLERANCE VALUE, IT IS PERFECT SHOOT
         if (Mathf.Abs(distance) <= perfectShotTolerance)
         {
             distance = 0;
@@ -146,12 +146,14 @@ public class DivideManager : InstanceManager<DivideManager>
         }
         #endregion
 
+        //SPAWN TWO NEW PLATFORMS, ONE IS STANDING PLATFORM, OTHER IS FALLING ONE
         var stand = Instantiate(reference.gameObject, reference.position, Quaternion.identity);
         var falling = Instantiate(reference.gameObject, reference.position, Quaternion.identity);
 
+        //DIVIDING PROCESS  
         Divide(distance, ref stand, ref falling);
 
-        //MAKE PROCESS ON PIECES CREATED
+        //ALL PROCESSES ON NEW PLATFORMS
         #region Piece Process 
         stand.GetComponent<Platform>().StandProcess();
         reference.GetComponent<Platform>().DestroyProcess();
@@ -170,17 +172,20 @@ public class DivideManager : InstanceManager<DivideManager>
 
     }
 
+    //RESET ALL PLATFORM LIST WHEN PASS THE NEXT LEVEL
     private void OnPlatformListReset(object value)
     {
         var newBeginPlatform = (GameObject)value;
 
-        //DESTROY ALL PREVIOUS PLATFORMS EXCEPT LAST TWO FOR OPTIMIZATION
+        //DESTROY ALL PREVIOUS PLATFORMS WITH A DELAY
         for (int i = 0; i < AllPlatforms.Count; i++)
         {
             Destroy(AllPlatforms[i], i < AllPlatforms.Count - 2 ? 1f : 10f);
         }
 
         AllPlatforms.Clear();
+
+        //ADD NEW LEVEL BEGINNING PLATFORM TO LIST
         AllPlatforms.Add(newBeginPlatform);
     }
 

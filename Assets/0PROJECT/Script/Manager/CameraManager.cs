@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Cinemachine;
 
+//DEFINE ALL CAMERA ENUMS
 public enum CMCam
 {
     CMMain,
@@ -18,8 +19,10 @@ public class CameraManager : InstanceManager<CameraManager>
 
     void Start()
     {
+        //ADD ALL CINEMACHINES IN THE LIST
         SetCams();
 
+        //CHECK CURRENT CAMERA ALL TIME
         InvokeRepeating("CamControl", .1f, .1f);
     }
 
@@ -32,24 +35,23 @@ public class CameraManager : InstanceManager<CameraManager>
 
     public void CamControl()
     {
-        switch (cMCamEnum)
+        //CHECK CURRENT CAMERA WITH ENUM VALUE
+        GameObject CurrentCam;
+
+        CurrentCam = cMCamEnum switch
         {
-            case CMCam.CMMain:
-                CamUpdate(CMMain);
-                break;
+            CMCam.CMMain => CMMain,
+            CMCam.CMFinish => CMFinish,
+            CMCam.CMFail => CMFail,
+            _ => CMMain
+        };
 
-            case CMCam.CMFinish:
-                CamUpdate(CMFinish);
-                break;
-
-            case CMCam.CMFail:
-                CamUpdate(CMFail);
-                break;
-        }
+        CamUpdate(CurrentCam);
     }
 
     public void CamUpdate(GameObject activeCam)
     {
+        //ACTIVATE CURRENT CAM, DEACTIVATE ALL OTHERS CAM
         for (int i = 0; i < CamList.Count; i++)
         {
             if (CamList[i] != activeCam)
@@ -60,16 +62,6 @@ public class CameraManager : InstanceManager<CameraManager>
 
         }
     }
-
-    // IEnumerator CameraChange(CMCam currentCam, CMCam previousCam) //SATIN ALINILAN YERI BIRKAC SANIYE GOSTERIYOR
-    // {
-    //     cMCamEnum = currentCam;
-
-    //     yield return new WaitForSeconds(3f);
-
-    //     cMCamEnum = previousCam;
-
-    // }
 
     //########################################    EVENTS    ###################################################################
     void OnEnable()
@@ -84,13 +76,11 @@ public class CameraManager : InstanceManager<CameraManager>
         EventManager.RemoveHandler(GameEvent.OnFinish, OnFinish);
         EventManager.RemoveHandler(GameEvent.OnFail, OnFail);
         EventManager.RemoveHandler(GameEvent.OnGenerateLevel, OnGenerateLevel);
-
     }
 
     private void OnGenerateLevel()
     {
         cMCamEnum = CMCam.CMMain;
-
     }
 
     private void OnFinish()
@@ -102,7 +92,7 @@ public class CameraManager : InstanceManager<CameraManager>
     {
         cMCamEnum = CMCam.CMFail;
 
-        //LEAVE THE CAMERA TRACKING
+        //LEAVE THE CAMERA TRACKING ON FAIL SITUATION
         var camZOffset = 12f;
         CMFail.transform.position = new Vector3(CMFail.transform.position.x, CMFail.transform.position.y, PlayerManager.Instance.transform.position.z - camZOffset);
         CMFail.GetComponent<CinemachineVirtualCamera>().Follow = null;

@@ -34,14 +34,17 @@ public class UIManager : InstanceManager<UIManager>
         manager = FindObjectOfType<GameManager>();
         data = manager.data;
 
+        //CHECK TEXTS
         InvokeRepeating(nameof(TextCheck), 0f, 0.1f);
     }
 
     private void TextCheck()
     {
+        //CHECK ALL TEXTS USE IN SCREEN
         TMP_LevelText.text = "Level " + data.UILevelCount;
         TMP_CoinText.text = data.TotalCoin.ToString();
         TMP_PlatformCountText.text = manager.normalShootCounter.ToString();
+
         TMP_HighScoreText.text = "High Score \n" + "<size= 150>" + data.values.HighScore + "</size>";
         TMP_LongestStreakText.text = "Longest \n Perfect Streak \n" + "<size= 70>" + data.values.LongestPerfectStreak + "</size>";
 
@@ -64,9 +67,11 @@ public class UIManager : InstanceManager<UIManager>
 
     private void OnEnable()
     {
+        //SET BUTTON ACTIONS
         BTN_NextLevel.onClick.AddListener(NextLevelButton);
         BTN_Restart.onClick.AddListener(RestartButton);
 
+        //DEFINE EVENTS USED IN THIS SCRIPT
         EventManager.AddHandler(GameEvent.OnStart, OnStart);
         EventManager.AddHandler(GameEvent.OnFinish, OnFinish);
         EventManager.AddHandler(GameEvent.OnFail, OnFail);
@@ -102,6 +107,7 @@ public class UIManager : InstanceManager<UIManager>
 
     private void OnCollectCoin()
     {
+        //TRIGGER COIN UI POP UP ANIMATION
         ANIM_CoinImage.SetTrigger("_isCollected");
     }
 
@@ -110,7 +116,7 @@ public class UIManager : InstanceManager<UIManager>
         //IF REACH THE LAST LEVEL, KEEP PLAYING LAST LEVEL
         data.LevelCount += data.LevelCount < data.lists.LevelPlatformCounts.Count - 1 ? 1 : 0;
 
-        //UPDATE UI LEVEL COUNT
+        //UPDATE LEVEL SHOWN IN SCREEN
         data.UILevelCount++;
 
         OBJ_MainPanel.SetActive(true);

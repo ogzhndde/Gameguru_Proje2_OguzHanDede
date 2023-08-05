@@ -8,8 +8,13 @@ using System;
 [CreateAssetMenu(fileName = "Data", menuName = "ScriptableObject/GameData", order = 1)]
 public class GameData : ScriptableObject
 {
-    [SerializeField] private float totalCoin; //################## TOTAL COIN
-    public float TotalCoin
+    /*
+    I KEEP ALL THE DATA I NEED TO SAVE IN THE GAME WITHIN THIS SCRIPTABLE OBJECT AND CALL IT HERE WHEN NECESSARY.
+    */
+
+
+    [SerializeField] private float totalCoin; 
+    public float TotalCoin //ENCAPSULATING TO PREVENT VALUE DOWN BELOW ZERO
     {
         get { return totalCoin; }
         set
@@ -64,13 +69,6 @@ public class GameData : ScriptableObject
         bools._isPerfectShoot = false;
     }
 
-    [Button]
-    void ClearPlayerPrefs()
-    {
-        PlayerPrefs.DeleteAll();
-    }
-
-
     void ResetList<T>(List<T> list)
     {
         for (int i = 0; i < list.Count; i++)
@@ -78,11 +76,5 @@ public class GameData : ScriptableObject
             list[i] = default(T);
         }
     }
-
-}
-
-[System.Serializable]
-public class Levels
-{
 
 }

@@ -15,11 +15,6 @@ public class FinishLine : MonoBehaviour
         manager = FindObjectOfType<GameManager>();
     }
 
-    void Update()
-    {
-
-    }
-
     void OnTriggerEnter(Collider other)
     {
         switch (other.tag)
@@ -33,23 +28,24 @@ public class FinishLine : MonoBehaviour
 
     void NextLevelPreperation()
     {
+        //ACTIVE NEXT LEVEL PLATFORMS
         StablePlatform.SetActive(true);
         NextLevelPlatform.SetActive(true);
         NextLevelPlatform.GetComponent<Platform>().SetRandomMaterial();
 
+        //JUMP TO NEXT LEVEL STABLE PLATFORM
         float jumpX = StablePlatform.transform.position.x;
         float jumpY = manager.Player.transform.position.y;
         float jumpZ = StablePlatform.transform.position.z;
-
         manager.Player.transform.DOJump(new Vector3(jumpX, jumpY, jumpZ), 1f, 1, 0.5f);
 
+        //RESET VALUES FOR NEXT LEVEL
         EventManager.Broadcast(GameEvent.OnPlatformListReset, NextLevelPlatform);
-            EventManager.Broadcast(GameEvent.OnGenerateLevel);
 
+        //GENERATE LEVEL
+        EventManager.Broadcast(GameEvent.OnGenerateLevel);
 
     }
-
-
 
     //####################      EVENTS      ###########################
     void OnEnable()
@@ -60,7 +56,6 @@ public class FinishLine : MonoBehaviour
     void OnDisable()
     {
         EventManager.RemoveHandler(GameEvent.OnNextLevel, OnNextLevel);
-
     }
 
     private void OnNextLevel()

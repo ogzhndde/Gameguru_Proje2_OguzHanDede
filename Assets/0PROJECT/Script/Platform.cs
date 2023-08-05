@@ -25,15 +25,14 @@ public class Platform : MonoBehaviour
     [SerializeField] private bool _isStop = false;
     private bool _isForward;
 
-
     [Space(10)]
     [Header("Others")]
     public GameObject PlatformCollectable = null;
 
-
     IEnumerator Start()
     {
         yield return new WaitForSeconds(0.2f);
+        //SPAWN COLLECTABLES WITH A DELAY
         SpawnCollectable();
     }
 
@@ -45,6 +44,8 @@ public class Platform : MonoBehaviour
     public void Movement()
     {
         if (_isStop) return;
+
+        //MOVE THE PLATFORM RIGHT TO LEFT IN A LOOP
         #region Move
         var position = transform.position;
         var direction = _isForward ? 1 : -1;
@@ -57,13 +58,12 @@ public class Platform : MonoBehaviour
             position.x = Mathf.Clamp(position.x, -limit, limit);
             _isForward = !_isForward;
         }
-
+        
         transform.position = position;
         #endregion
     }
 
-
-    //#########################      MATERIALS    #########################
+    //###############     MATERIAL METHODS, SET NEW MATERIALS IN A LOOP    ##################
     public void SetRandomMaterial()
     {
         MaterialIndex = Random.Range(0, AllMaterials.Count);
@@ -77,6 +77,8 @@ public class Platform : MonoBehaviour
 
 
     //#########################      PROCESSES    #########################
+
+    //ACTIONS TO BE TAKEN WHEN SPAWNED
     public void SpawnProcess(Direction comingSide)
     {
         _isStop = false;
@@ -86,11 +88,13 @@ public class Platform : MonoBehaviour
         SetMaterial();
     }
 
+    //ACTIONS ON STANDING PLATFORM
     public void StandProcess()
     {
         _isStop = true;
     }
 
+    //ACTIONS ON FALLING PLATFORM
     public void FallingProcess()
     {
         _isStop = true;
@@ -101,15 +105,20 @@ public class Platform : MonoBehaviour
         Destroy(gameObject, 3f);
     }
 
+    //ACTIONS ON PLATFORMS THAT SHOULD BE DISAPPEARED
     public void DestroyProcess()
     {
         Destroy(gameObject);
     }
 
+
+    //ACTIONS ON PERFECT SHOOT
     public void PerfectShootProcess()
     {
         gameObject.LeanScale(transform.localScale * 1.1f, 0.3f).setEasePunch();
-        CreatePerfectSprite();
+
+        //SPAWN A PARTICLE ON PERFECT SHOOT
+        CreatePerfectParticle();
     }
 
 
@@ -118,19 +127,22 @@ public class Platform : MonoBehaviour
     public void SpawnCollectable()
     {
         if (Random.value < 0.8f) return; //%20 PERCENT SPAWN COLLECTABLE
-        if (_isStop) return;
+        if (_isStop) return; //IF PLATFORM IS STABLE, DONT SPAWN COLLECTABLE
 
         var collList = GameManager.Instance.Collectables;
 
+        //SPAWN RANDOM COLLECTABLE
         GameObject collectable = Instantiate(collList[Random.Range(0, collList.Count)], transform.position + new Vector3(0, 1, 0), Quaternion.identity);
         PlatformCollectable = collectable;
 
+        //SET THIS PLATFORM AS COLLECTABLE TARGET
         collectable.GetComponent<Collectable>().SetTarget(transform);
     }
 
 
-    private void CreatePerfectSprite()
+    private void CreatePerfectParticle()
     {
+        //FIND BOUND OF THE PLATFORM 
         MeshRenderer meshRenderer = GetComponent<MeshRenderer>();
         Vector3 surfaceNormalWorld = -transform.forward;
 
@@ -139,11 +151,13 @@ public class Platform : MonoBehaviour
         Vector3 surfaceCenterWorld = meshRenderer.bounds.center;
         Vector3 surfaceSizeLocal = transform.InverseTransformVector(surfaceSizeWorld);
 
+        //DETECT THE EDGE BACK TO THE Z AXIS
         if (Mathf.Abs(surfaceSizeLocal.z) > 0)
             surfaceCenterWorld += surfaceNormalWorld * (surfaceSizeWorld.z * 0.5f);
         else
             surfaceCenterWorld -= surfaceNormalWorld * (surfaceSizeWorld.z * 0.5f);
 
+        //SPAWN PARTICLE
         var perfectParticle = Instantiate(Resources.Load("PerfectParticle") as GameObject, surfaceCenterWorld, Quaternion.identity);
     }
 

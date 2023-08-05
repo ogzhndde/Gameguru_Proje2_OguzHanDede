@@ -31,11 +31,13 @@ public class RotateCam : MonoBehaviour
 
     private void OnGenerateLevel()
     {
+        //RESET ROTATE VALUE WHEN GENERATE NEW LEVEL
         transform.eulerAngles = new Vector3(0, 0, 0);
     }
 
     private void OnFinish()
     {
+        //START ROTATING ON FINISH LINE
         transform.position = Player.transform.position;
         anim.Play("RotateCam", 0, 0);
     }

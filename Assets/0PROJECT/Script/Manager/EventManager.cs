@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 
+//ALL EVENTS USED IN THE GAME
 public enum GameEvent
 {
     OnStart,

@@ -7,12 +7,12 @@ public class EarnAmount : MonoBehaviour
 {
     [SerializeField] private TextMeshPro TMP_EarnAmount;
 
-
     public void SetEarnAmount(int amount)
     {
         TMP_EarnAmount.text = "+" + amount;
     }
 
+    //ANIMATION EVENT
     public void DestroyEvent()
     {
         Destroy(gameObject);

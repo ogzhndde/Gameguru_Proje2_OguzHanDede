@@ -29,14 +29,13 @@ public class GameManager : InstanceManager<GameManager>
 
     void Awake()
     {
-
         //LOAD DATA FOR MOBILE DEVICES
 #if !UNITY_EDITOR
         SaveManager.LoadData(data);
 #endif
-
         //MAKE FPS STABLE
         Application.targetFrameRate = 60;
+
         data.values.perfectShootCounter = 0;
 
         Player = FindObjectOfType<PlayerManager>().gameObject;
@@ -44,6 +43,7 @@ public class GameManager : InstanceManager<GameManager>
 
     void Start()
     {
+        //GENERATE LEVEL IN BEGINNING OF THE GAME
         EventManager.Broadcast(GameEvent.OnGenerateLevel);
 
         InvokeRepeating(nameof(CheckFail), 0.2f, 0.2f);
@@ -55,6 +55,7 @@ public class GameManager : InstanceManager<GameManager>
     {
         if (_isGameFail) return;
 
+        //IF PLAYER FALLS, GAME FAIL
         if (Player.transform.position.y < -0.2f)
         {
             _isGameFail = true;
@@ -64,8 +65,10 @@ public class GameManager : InstanceManager<GameManager>
 
     public void ShootCounter()
     {
+        //COUNT PLATFORM NUMBER IN EVERY DIVIDE
         normalShootCounter++;
 
+        //IF REACH LEVEL PLATFORM COUNT, STOP CREATE NEW PLATFORMS
         if (normalShootCounter == data.lists.LevelPlatformCounts[data.LevelCount])
             _canCreatePlatform = false;
 
@@ -77,6 +80,7 @@ public class GameManager : InstanceManager<GameManager>
 
     private void ClearPreviousLevelValues()
     {
+        //WHEN YOU GET NEXT LEVEL, RESET VALUES
         _isGameStarted = false;
         _canCreatePlatform = true;
 
@@ -93,6 +97,7 @@ public class GameManager : InstanceManager<GameManager>
 
     private void OnEnable()
     {
+        //DEFINE EVENTS USED IN THIS SCRIPT
         EventManager.AddHandler(GameEvent.OnStart, OnStart);
         EventManager.AddHandler(GameEvent.OnFinish, OnFinish);
         EventManager.AddHandler(GameEvent.OnFail, OnFail);
@@ -131,13 +136,14 @@ public class GameManager : InstanceManager<GameManager>
 
     private void OnMissShoot()
     {
+        //WHEN MISS THE PLATFORM, STOP DIVIDING
         _canDividePlatform = false;
         EventManager.Broadcast(GameEvent.OnPlaySound, "SoundMiss");
     }
 
     private void OnNormalShoot()
     {
-
+        //LOSE PERFECT SHOOT COMBO
         data.bools._isPerfectShoot = false;
         data.values.perfectShootCounter = 0;
 
@@ -146,7 +152,7 @@ public class GameManager : InstanceManager<GameManager>
 
     private void OnPerfectShoot()
     {
-
+        //KEEP COUNTING PERFECT SHOOT COMBO
         data.bools._isPerfectShoot = true;
         data.values.perfectShootCounter++;
 
@@ -155,8 +161,9 @@ public class GameManager : InstanceManager<GameManager>
         int currentStreak = data.values.perfectShootCounter;
         data.values.LongestPerfectStreak = currentStreak > longestStreak ? currentStreak : longestStreak;
 
+        //PLAY A SOUND THAT GOES FURTHER
         float soundPitchValue = 0.9f + (data.values.perfectShootCounter * 0.1f);
-        EventManager.Broadcast(GameEvent.OnPlaySoundPitch, "SoundPerfect", soundPitchValue > 2f ? 2f : soundPitchValue);
+        EventManager.Broadcast(GameEvent.OnPlaySoundPitch, "SoundPerfect", soundPitchValue > 3f ? 3f : soundPitchValue);
     }
 
     private void OnGenerateLevel()
@@ -165,9 +172,10 @@ public class GameManager : InstanceManager<GameManager>
         var beginPlatformPos = DivideManager.Instance.AllPlatforms[0].transform.position;
         var finishLineOffset = data.lists.LevelPlatformCounts[data.LevelCount] * (DivideManager.Instance.AllPlatforms[0].transform.localScale.z) + 2.233698f;
 
+        //INSTANTIATE NEW FINISH LINE
         var FinishLine = Instantiate(Resources.Load("Finish") as GameObject, beginPlatformPos + new Vector3(0, 7f, finishLineOffset), Quaternion.identity);
 
-        FinishLine.transform.DOMove(FinishLine.transform.position + new Vector3(0, -6.5f, 0), 2f).SetEase(Ease.OutExpo);
+        FinishLine.transform.DOMove(FinishLine.transform.position + new Vector3(0, -6.5f, 0), 3f).SetEase(Ease.OutExpo);
 
         ClearPreviousLevelValues();
 
