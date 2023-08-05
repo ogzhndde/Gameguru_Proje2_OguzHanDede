@@ -25,7 +25,7 @@ public class Platform : MonoBehaviour
     [SerializeField] private bool _isStop = false;
     private bool _isForward;
 
-    
+
     [Space(10)]
     [Header("Others")]
     public GameObject PlatformCollectable = null;
@@ -62,6 +62,7 @@ public class Platform : MonoBehaviour
         #endregion
     }
 
+
     //#########################      MATERIALS    #########################
     public void SetRandomMaterial()
     {
@@ -96,8 +97,8 @@ public class Platform : MonoBehaviour
 
         Rigidbody rb = gameObject.AddComponent(typeof(Rigidbody)) as Rigidbody;
         rb.useGravity = true;
-        Destroy(gameObject, 3f);
 
+        Destroy(gameObject, 3f);
     }
 
     public void DestroyProcess()
@@ -108,16 +109,16 @@ public class Platform : MonoBehaviour
     public void PerfectShootProcess()
     {
         gameObject.LeanScale(transform.localScale * 1.1f, 0.3f).setEasePunch();
+        CreatePerfectSprite();
     }
 
 
 
     //#########################      COLLECTABLES    #########################
-
     public void SpawnCollectable()
     {
         if (Random.value < 0.8f) return; //%20 PERCENT SPAWN COLLECTABLE
-        if(_isStop) return;
+        if (_isStop) return;
 
         var collList = GameManager.Instance.Collectables;
 
@@ -126,4 +127,25 @@ public class Platform : MonoBehaviour
 
         collectable.GetComponent<Collectable>().SetTarget(transform);
     }
+
+
+    private void CreatePerfectSprite()
+    {
+        MeshRenderer meshRenderer = GetComponent<MeshRenderer>();
+        Vector3 surfaceNormalWorld = -transform.forward;
+
+        Vector3 surfaceSizeWorld = meshRenderer.bounds.size;
+
+        Vector3 surfaceCenterWorld = meshRenderer.bounds.center;
+        Vector3 surfaceSizeLocal = transform.InverseTransformVector(surfaceSizeWorld);
+
+        if (Mathf.Abs(surfaceSizeLocal.z) > 0)
+            surfaceCenterWorld += surfaceNormalWorld * (surfaceSizeWorld.z * 0.5f);
+        else
+            surfaceCenterWorld -= surfaceNormalWorld * (surfaceSizeWorld.z * 0.5f);
+
+        var perfectParticle = Instantiate(Resources.Load("PerfectParticle") as GameObject, surfaceCenterWorld, Quaternion.identity);
+    }
+
+
 }

@@ -79,6 +79,7 @@ public class PlayerManager : InstanceManager<PlayerManager>
 
     private void OnFail()
     {
+        playerStateEnum = PlayerState.FallingPhase;
         Destroy(gameObject, 1.5f);
     }
 

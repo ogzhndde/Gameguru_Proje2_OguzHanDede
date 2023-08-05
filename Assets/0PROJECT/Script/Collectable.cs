@@ -43,16 +43,23 @@ public class Collectable : MonoBehaviour
 
     public void Collect()
     {
+        //SPAWN PARTICLE
         Instantiate(CollectableParticle, transform.position, Quaternion.identity);
+
+        //SPAWN 3D TMP TO SHOW EARN AMOUNT
+        var earnAmount = Instantiate(Resources.Load("EarnAmount") as GameObject, transform.position, Quaternion.identity);
+        earnAmount.GetComponent<EarnAmount>().SetEarnAmount(CollValue);
+        
+        //SAVE EARN AMOUNT TO GAME DATA
         GameManager.Instance.data.TotalCoin += CollValue;
 
         //PLAY SOUND DEPENDS ON COLLECTABLE TYPE
         string sound;
-        sound = collectableTypeEnum switch{ CollectableType.Coin => "SoundCoin", CollectableType.Diamond => "SoundDiamond", CollectableType.Star => "SoundStar", _=> ""};
+        sound = collectableTypeEnum switch { CollectableType.Coin => "SoundCoin", CollectableType.Diamond => "SoundDiamond", CollectableType.Star => "SoundStar", _ => "" };
         PlaySound(sound);
 
         EventManager.Broadcast(GameEvent.OnCollectCoin);
-        
+
         Destroy(gameObject);
     }
 

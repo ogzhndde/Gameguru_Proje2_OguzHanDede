@@ -43,7 +43,7 @@ public class UIManager : InstanceManager<UIManager>
         TMP_CoinText.text = data.TotalCoin.ToString();
         TMP_PlatformCountText.text = manager.normalShootCounter.ToString();
         TMP_HighScoreText.text = "High Score \n" + "<size= 150>" + data.values.HighScore + "</size>";
-        TMP_LongestStreakText.text = "Longest \n Perfect Streak \n" + "<size= 85>" + data.values.LongestPerfectStreak + "</size>";
+        TMP_LongestStreakText.text = "Longest \n Perfect Streak \n" + "<size= 70>" + data.values.LongestPerfectStreak + "</size>";
 
     }
 
@@ -118,6 +118,9 @@ public class UIManager : InstanceManager<UIManager>
         OBJ_WinPanel.SetActive(false);
 
         TextCheck();
+
+        //SAVE CURRENT GAME DATA
+        SaveManager.SaveData(data);
     }
 
 }

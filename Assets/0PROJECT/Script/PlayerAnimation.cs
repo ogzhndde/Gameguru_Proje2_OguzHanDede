@@ -18,6 +18,7 @@ public class PlayerAnimation : MonoBehaviour
         bool isIdle = false;
         bool isRunning = false;
         bool isDancing = false;
+        bool isFalling = false;
 
         switch (pManager.playerStateEnum)
         {
@@ -30,15 +31,19 @@ public class PlayerAnimation : MonoBehaviour
             case PlayerState.FinishPhase:
                 isDancing = true;
                 break;
+            case PlayerState.FallingPhase:
+                isFalling = true;
+                break;
         }
 
-        SetAnimationStates(isIdle, isRunning, isDancing);
+        SetAnimationStates(isIdle, isRunning, isDancing, isFalling);
     }
 
-    private void SetAnimationStates(bool isIdle, bool isRunning, bool isDancing)
+    private void SetAnimationStates(bool isIdle, bool isRunning, bool isDancing, bool isFalling)
     {
         anim.SetBool("_isIdle", isIdle);
         anim.SetBool("_isRunning", isRunning);
         anim.SetBool("_isDancing", isDancing);
+        anim.SetBool("_isFalling", isFalling);
     }
 }

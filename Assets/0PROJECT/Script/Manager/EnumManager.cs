@@ -6,7 +6,8 @@ public enum PlayerState
 {
     IdlePhase,
     RunPhase,
-    FinishPhase
+    FinishPhase,
+    FallingPhase
 }
 
 public enum Direction

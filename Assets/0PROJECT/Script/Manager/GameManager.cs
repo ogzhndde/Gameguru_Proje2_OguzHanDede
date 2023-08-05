@@ -29,6 +29,12 @@ public class GameManager : InstanceManager<GameManager>
 
     void Awake()
     {
+
+        //LOAD DATA FOR MOBILE DEVICES
+#if !UNITY_EDITOR
+        SaveManager.LoadData(data);
+#endif
+
         //MAKE FPS STABLE
         Application.targetFrameRate = 60;
         data.values.perfectShootCounter = 0;
@@ -41,6 +47,7 @@ public class GameManager : InstanceManager<GameManager>
         EventManager.Broadcast(GameEvent.OnGenerateLevel);
 
         InvokeRepeating(nameof(CheckFail), 0.2f, 0.2f);
+        InvokeRepeating(nameof(SaveData), 0.2f, 0.2f);
     }
 
 
@@ -48,7 +55,7 @@ public class GameManager : InstanceManager<GameManager>
     {
         if (_isGameFail) return;
 
-        if (Player.transform.position.y < -0.75f)
+        if (Player.transform.position.y < -0.2f)
         {
             _isGameFail = true;
             EventManager.Broadcast(GameEvent.OnFail);
@@ -60,9 +67,7 @@ public class GameManager : InstanceManager<GameManager>
         normalShootCounter++;
 
         if (normalShootCounter == data.lists.LevelPlatformCounts[data.LevelCount])
-        {
             _canCreatePlatform = false;
-        }
 
         //CHECK HIGH SCORE AND SAVE
         int highScore = data.values.HighScore;
@@ -76,6 +81,11 @@ public class GameManager : InstanceManager<GameManager>
         _canCreatePlatform = true;
 
         normalShootCounter = 0;
+    }
+
+    public void SaveData()
+    {
+        SaveManager.SaveData(data);
     }
 
 
