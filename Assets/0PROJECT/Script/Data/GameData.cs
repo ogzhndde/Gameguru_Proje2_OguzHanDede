@@ -54,8 +54,6 @@ public class GameData : ScriptableObject
         public List<int> LevelPlatformCounts;
     }
 
-
-
     [Button]
     void ResetData()
     {

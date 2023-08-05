@@ -42,6 +42,16 @@ public class Collectable : MonoBehaviour
         TargetPlatform = target;
     }
 
+    void OnTriggerEnter(Collider other)
+    {
+        switch (other.tag)
+        {
+            case "Player":
+                Collect();
+                break;
+        }
+    }
+
     public void Collect()
     {
         //SPAWN PARTICLE
@@ -69,13 +79,5 @@ public class Collectable : MonoBehaviour
         EventManager.Broadcast(GameEvent.OnPlaySound, sound);
     }
 
-    void OnTriggerEnter(Collider other)
-    {
-        switch (other.tag)
-        {
-            case "Player":
-                Collect();
-                break;
-        }
-    }
+
 }

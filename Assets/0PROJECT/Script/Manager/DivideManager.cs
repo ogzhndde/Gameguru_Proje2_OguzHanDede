@@ -30,13 +30,16 @@ public class DivideManager : InstanceManager<DivideManager>
         bool isFirstFalling = distance > 0;
 
         // SCALE
+        #region Scale
         Vector3 referenceScale = reference.localScale;
         float fallingScaleX = Mathf.Abs(distance);
         float standScaleX = referenceScale.x - fallingScaleX;
         falling.localScale = new Vector3(fallingScaleX, referenceScale.y, referenceScale.z);
         stand.localScale = new Vector3(standScaleX, referenceScale.y, referenceScale.z);
+        #endregion
 
         // POSITION 
+        #region Position
         Vector3 fallingPosition = GetPositionEdge(referenceMesh, isFirstFalling ? Direction.Left : Direction.Right);
         float fallingOffset = fallingScaleX / 2f;
         fallingPosition.x += isFirstFalling ? fallingOffset : -fallingOffset;
@@ -46,6 +49,7 @@ public class DivideManager : InstanceManager<DivideManager>
         float standOffset = standScaleX / 2f;
         standPosition.x += !isFirstFalling ? standOffset : -standOffset;
         stand.position = standPosition;
+        #endregion
 
         // PLATFORM LIST OPERATIONS
         AllPlatforms.Add(stand.gameObject);
@@ -60,12 +64,7 @@ public class DivideManager : InstanceManager<DivideManager>
         var extents = mesh.bounds.extents;
         var position = mesh.transform.position;
 
-        position.x += direction switch
-        {
-            Direction.Left => -extents.x,
-            Direction.Right => extents.x,
-            _ => 0
-        };
+        position.x += direction switch { Direction.Left => -extents.x, Direction.Right => extents.x, _ => 0 };
         return position;
     }
 

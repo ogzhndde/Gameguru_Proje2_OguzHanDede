@@ -82,9 +82,7 @@ public class Platform : MonoBehaviour
     public void SpawnProcess(Direction comingSide)
     {
         _isStop = false;
-
         directionEnum = comingSide == Direction.Left ? Direction.Right : Direction.Left;
-
         SetMaterial();
     }
 

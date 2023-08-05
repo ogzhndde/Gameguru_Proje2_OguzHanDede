@@ -28,8 +28,7 @@ public class PlayerMovement : MonoBehaviour
 
         //SET X AND Z VALUES TO MOVE SMOOTHLY
         float xMovement = Mathf.Lerp(transform.position.x,
-                                        TargetPlatform != null ?
-                                        TargetPlatform.transform.position.x : transform.position.x,
+                                        TargetPlatform != null ?TargetPlatform.transform.position.x : transform.position.x,
                                         Time.deltaTime * pManager.structMovement.xSensitivity);
         float zMovement = pManager.structMovement.speed * Time.deltaTime;
 
@@ -48,7 +47,7 @@ public class PlayerMovement : MonoBehaviour
         //CHECK LIST TO FIND CLOSEST PLATFORM
         for (int i = 0; i < allPlatforms.Count; i++)
         {
-            if (allPlatforms[i].transform.position.z > transform.position.z)
+            if (allPlatforms[i].transform.position.z - 1f > transform.position.z)
             {
                 float distance = allPlatforms[i].transform.position.z - transform.position.z;
 

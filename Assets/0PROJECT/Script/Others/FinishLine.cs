@@ -44,7 +44,6 @@ public class FinishLine : MonoBehaviour
 
         //GENERATE LEVEL
         EventManager.Broadcast(GameEvent.OnGenerateLevel);
-
     }
 
     //####################      EVENTS      ###########################

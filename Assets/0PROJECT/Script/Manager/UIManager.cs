@@ -128,5 +128,4 @@ public class UIManager : InstanceManager<UIManager>
         //SAVE CURRENT GAME DATA
         SaveManager.SaveData(data);
     }
-
 }
