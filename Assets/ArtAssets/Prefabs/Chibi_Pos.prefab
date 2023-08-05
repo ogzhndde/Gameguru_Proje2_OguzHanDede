@@ -48,7 +48,7 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.82813776, y: 1.2031296, z: 0.35164213}
+  m_Size: {x: 0.9103093, y: 1.2031296, z: 0.35164213}
   m_Center: {x: 0, y: 0.609721, z: 7.7961463e-16}
 --- !u!54 &4327072457915481215
 Rigidbody:
@@ -88,7 +88,7 @@ MonoBehaviour:
   structMovement:
     TargetPlatform: {fileID: 0}
     speed: 2.1
-    xSensitivity: 2.5
+    xSensitivity: 3
   structAnimation:
     anim: {fileID: 3219525008688551776}
 --- !u!114 &4327072457915481208
