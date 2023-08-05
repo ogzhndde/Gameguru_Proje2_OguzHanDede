@@ -12,13 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f319133c54dbfe7498d689097b6a52fb, type: 3}
   m_Name: Data
   m_EditorClassIdentifier: 
-  totalCoin: 34
-  LevelCount: 18
-  UILevelCount: 3
+  totalCoin: 0
+  LevelCount: 0
+  UILevelCount: 1
   values:
     perfectShootCounter: 0
-    HighScore: 28
-    LongestPerfectStreak: 4
+    HighScore: 0
+    LongestPerfectStreak: 0
   bools:
     _isPerfectShoot: 0
   lists:
