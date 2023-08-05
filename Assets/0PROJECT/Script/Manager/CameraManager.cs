@@ -1,17 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Cinemachine;
 
 public enum CMCam
 {
     CMMain,
-    CMFinish
+    CMFinish,
+    CMFail
 }
 
 public class CameraManager : InstanceManager<CameraManager>
 {
     public CMCam cMCamEnum;
-    public GameObject CMMain, CMFinish;
+    public GameObject CMMain, CMFinish, CMFail;
     public List<GameObject> CamList = new List<GameObject>();
 
     void Start()
@@ -25,6 +27,7 @@ public class CameraManager : InstanceManager<CameraManager>
     {
         CamList.Add(CMMain);
         CamList.Add(CMFinish);
+        CamList.Add(CMFail);
     }
 
     public void CamControl()
@@ -37,6 +40,10 @@ public class CameraManager : InstanceManager<CameraManager>
 
             case CMCam.CMFinish:
                 CamUpdate(CMFinish);
+                break;
+
+            case CMCam.CMFail:
+                CamUpdate(CMFail);
                 break;
         }
     }
@@ -68,12 +75,14 @@ public class CameraManager : InstanceManager<CameraManager>
     void OnEnable()
     {
         EventManager.AddHandler(GameEvent.OnFinish, OnFinish);
+        EventManager.AddHandler(GameEvent.OnFail, OnFail);
         EventManager.AddHandler(GameEvent.OnGenerateLevel, OnGenerateLevel);
     }
 
     void OnDisable()
     {
         EventManager.RemoveHandler(GameEvent.OnFinish, OnFinish);
+        EventManager.RemoveHandler(GameEvent.OnFail, OnFail);
         EventManager.RemoveHandler(GameEvent.OnGenerateLevel, OnGenerateLevel);
 
     }
@@ -81,12 +90,20 @@ public class CameraManager : InstanceManager<CameraManager>
     private void OnGenerateLevel()
     {
         cMCamEnum = CMCam.CMMain;
-       
+
     }
 
     private void OnFinish()
     {
         cMCamEnum = CMCam.CMFinish;
+    }
+
+    private void OnFail()
+    {
+        cMCamEnum = CMCam.CMFail;
+
+        //LEAVE THE CAMERA TRACKING
+        CMFail.GetComponent<CinemachineVirtualCamera>().Follow = null;
     }
 
 }

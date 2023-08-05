@@ -16,12 +16,10 @@ public class DivideManager : InstanceManager<DivideManager>
     [SerializeField] private Transform reference;
     [SerializeField] private MeshRenderer referenceMesh;
 
-
     private void Awake()
     {
         manager = FindObjectOfType<GameManager>();
     }
-
 
     private void Divide(float distance, ref GameObject standPlatform, ref GameObject fallingPlatform)
     {
@@ -99,12 +97,14 @@ public class DivideManager : InstanceManager<DivideManager>
     {
         EventManager.AddHandler(GameEvent.OnStart, OnStart);
         EventManager.AddHandler(GameEvent.OnDivide, OnDivide);
+        EventManager.AddHandler(GameEvent.OnPlatformListReset, OnPlatformListReset);
     }
 
     private void OnDisable()
     {
         EventManager.RemoveHandler(GameEvent.OnStart, OnStart);
         EventManager.RemoveHandler(GameEvent.OnDivide, OnDivide);
+        EventManager.RemoveHandler(GameEvent.OnPlatformListReset, OnPlatformListReset);
     }
 
     private void OnStart()
@@ -115,7 +115,7 @@ public class DivideManager : InstanceManager<DivideManager>
     private void OnDivide()
     {
         if (!manager._canDividePlatform) return;
-        if(!CurrentMovingPlatform) return;
+        if (!CurrentMovingPlatform) return;
         manager.ShootCounter();
 
         reference = CurrentMovingPlatform.transform;
@@ -166,8 +166,20 @@ public class DivideManager : InstanceManager<DivideManager>
         }
         #endregion 
 
+    }
 
+    private void OnPlatformListReset(object value)
+    {
+        var newBeginPlatform = (GameObject)value;
 
+        //DESTROY ALL PREVIOUS PLATFORMS EXCEPT LAST ONE
+        for (int i = 0; i < AllPlatforms.Count - 1; i++)
+        {
+            Destroy(AllPlatforms[i]);
+        }
+
+        AllPlatforms.Clear();
+        AllPlatforms.Add(newBeginPlatform);
     }
 
 }

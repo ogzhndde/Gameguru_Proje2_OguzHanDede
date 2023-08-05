@@ -19,6 +19,8 @@ public class GameData : ScriptableObject
         }
     }
 
+    public int LevelCount;
+
     [Space(5)]
     [Header("Structs")]
     public Values values;
@@ -29,7 +31,6 @@ public class GameData : ScriptableObject
     [Serializable]
     public struct Values
     {
-        public int LevelCount;
         public int perfectShootCounter;
         public int LongestPerfectShoot;
     }
@@ -38,8 +39,8 @@ public class GameData : ScriptableObject
     public struct Bools
     {
         public bool _isPerfectShoot;
-    }  
-    
+    }
+
     [Serializable]
     public struct Lists
     {
@@ -51,8 +52,10 @@ public class GameData : ScriptableObject
     [Button]
     void ResetData()
     {
+        LevelCount = 0;
         values.perfectShootCounter = 0;
-        
+        values.LongestPerfectShoot = 0;
+
         bools._isPerfectShoot = false;
     }
 

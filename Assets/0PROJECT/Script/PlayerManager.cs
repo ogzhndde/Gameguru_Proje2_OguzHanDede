@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public class PlayerManager : MonoBehaviour
+public class PlayerManager : InstanceManager<PlayerManager>
 {
     public PlayerState playerStateEnum;
 
     [HideInInspector] public GameManager manager;
     [HideInInspector] public DivideManager divideManager;
     [HideInInspector] public GameData data;
+     public GameObject ChildPlayer;
 
     [HideInInspector] public PlayerMovement playerMovement;
     [HideInInspector] public PlayerAnimation playerAnimation;
@@ -41,7 +42,11 @@ public class PlayerManager : MonoBehaviour
         manager = FindObjectOfType<GameManager>();
         divideManager = FindObjectOfType<DivideManager>();
         data = manager.data;
+        ChildPlayer = transform.GetChild(0).gameObject;
+
     }
+
+  
 
 
     //########################################    EVENTS    ###################################################################
@@ -50,6 +55,7 @@ public class PlayerManager : MonoBehaviour
     {
         EventManager.AddHandler(GameEvent.OnStart, OnStart);
         EventManager.AddHandler(GameEvent.OnFinish, OnFinish);
+        EventManager.AddHandler(GameEvent.OnFail, OnFail);
         EventManager.AddHandler(GameEvent.OnGenerateLevel, OnGenerateLevel);
     }
 
@@ -57,6 +63,7 @@ public class PlayerManager : MonoBehaviour
     {
         EventManager.RemoveHandler(GameEvent.OnStart, OnStart);
         EventManager.RemoveHandler(GameEvent.OnFinish, OnFinish);
+        EventManager.RemoveHandler(GameEvent.OnFail, OnFail);
         EventManager.RemoveHandler(GameEvent.OnGenerateLevel, OnGenerateLevel);
     }
 
@@ -70,10 +77,18 @@ public class PlayerManager : MonoBehaviour
         playerStateEnum = PlayerState.FinishPhase;
     }
 
-    
+    private void OnFail()
+    {
+        Destroy(gameObject, 1.5f);
+    }
+
+
     private void OnGenerateLevel()
     {
         playerStateEnum = PlayerState.IdlePhase;
+
+        //RESET CHILD ROTATION TO PREVENT THE CHILD FROM TRACKING
+        ChildPlayer.transform.eulerAngles = Vector3.zero;
     }
 
 }

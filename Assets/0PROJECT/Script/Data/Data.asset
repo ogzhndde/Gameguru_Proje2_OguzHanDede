@@ -13,11 +13,11 @@ MonoBehaviour:
   m_Name: Data
   m_EditorClassIdentifier: 
   totalCoin: 0
+  LevelCount: 2
   values:
-    LevelCount: 0
-    perfectShootCounter: 0
-    LongestPerfectShoot: 0
+    perfectShootCounter: 1
+    LongestPerfectShoot: 3
   bools:
-    _isPerfectShoot: 0
+    _isPerfectShoot: 1
   lists:
-    LevelPlatformCounts: 05000000060000000700000008000000090000000a0000000b0000000c0000000f00000014000000
+    LevelPlatformCounts: 0500000006000000080000000c0000000f000000110000001400000016000000180000001a0000001c0000001e000000

@@ -5,9 +5,12 @@ public enum GameEvent
 {
     OnStart,
     OnDivide,
+    OnFail,
     OnFinish,
+    OnNextLevel,
 
     OnGenerateLevel,
+    OnPlatformListReset,
 
     //SHOT EVENTS
     OnPerfectShoot,

@@ -12,37 +12,61 @@ public class GameManager : InstanceManager<GameManager>
     public int normalShootCounter;
 
     [Space(10)]
+    [Header("Definitions")]
+    public GameObject Player;
+    public GameObject CurrentFinishLine;
+
+    [Space(10)]
     [Header("Bools")]
     public bool _isGameStarted = false;
+    public bool _isGameFail = false;
     public bool _canDividePlatform = true;
     public bool _canCreatePlatform = true;
 
 
     void Awake()
     {
-#if !UNITY_EDITOR
-        SaveManager.LoadData(data);
-#endif
+        //MAKE FPS STABLE
+        Application.targetFrameRate = 60;
+
+        Player = FindObjectOfType<PlayerManager>().gameObject;
     }
 
     void Start()
     {
         EventManager.Broadcast(GameEvent.OnGenerateLevel);
+
+        InvokeRepeating(nameof(CheckFail), 0.2f, 0.2f);
     }
 
-    void Update()
-    {
 
+    void CheckFail()
+    {
+        if (_isGameFail) return;
+
+        if (Player.transform.position.y < -0.75f)
+        {
+            _isGameFail = true;
+            EventManager.Broadcast(GameEvent.OnFail);
+        }
     }
 
     public void ShootCounter()
     {
         normalShootCounter++;
 
-        if (normalShootCounter == data.lists.LevelPlatformCounts[data.values.LevelCount])
+        if (normalShootCounter == data.lists.LevelPlatformCounts[data.LevelCount])
         {
             _canCreatePlatform = false;
         }
+    }
+
+    private void ClearPreviousLevelValues()
+    {
+        _isGameStarted = false;
+        _canCreatePlatform = true;
+
+        normalShootCounter = 0;
     }
 
 
@@ -110,10 +134,12 @@ public class GameManager : InstanceManager<GameManager>
     {
         //SET FINISH LINE POSITION ON NEXT LEVELS
         var beginPlatformPos = DivideManager.Instance.AllPlatforms[0].transform.position;
-        var finishLineOffset = data.lists.LevelPlatformCounts[data.values.LevelCount] * (DivideManager.Instance.AllPlatforms[0].transform.localScale.z) + 2.233698f;
+        var finishLineOffset = data.lists.LevelPlatformCounts[data.LevelCount] * (DivideManager.Instance.AllPlatforms[0].transform.localScale.z) + 2.233698f;
 
         var FinishLine = Instantiate(Resources.Load("Finish") as GameObject, beginPlatformPos + new Vector3(0, 7f, finishLineOffset), Quaternion.identity);
 
         FinishLine.transform.DOMove(FinishLine.transform.position + new Vector3(0, -6.5f, 0), 2f).SetEase(Ease.OutExpo);
+
+        ClearPreviousLevelValues();
     }
 }
