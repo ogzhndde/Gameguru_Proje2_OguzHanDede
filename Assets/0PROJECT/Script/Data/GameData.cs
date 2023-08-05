@@ -20,6 +20,7 @@ public class GameData : ScriptableObject
     }
 
     public int LevelCount;
+    public int UILevelCount;
 
     [Space(5)]
     [Header("Structs")]
