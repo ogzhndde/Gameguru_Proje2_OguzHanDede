@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 public class DivideManager : InstanceManager<DivideManager>
 {
@@ -162,6 +163,7 @@ public class DivideManager : InstanceManager<DivideManager>
         }
         else //PERFECT SHOOT
         {
+            stand.GetComponent<Platform>().PerfectShootProcess();
             falling.GetComponent<Platform>().DestroyProcess();
         }
         #endregion 
@@ -172,10 +174,10 @@ public class DivideManager : InstanceManager<DivideManager>
     {
         var newBeginPlatform = (GameObject)value;
 
-        //DESTROY ALL PREVIOUS PLATFORMS EXCEPT LAST ONE
-        for (int i = 0; i < AllPlatforms.Count - 1; i++)
+        //DESTROY ALL PREVIOUS PLATFORMS EXCEPT LAST TWO FOR OPTIMIZATION
+        for (int i = 0; i < AllPlatforms.Count; i++)
         {
-            Destroy(AllPlatforms[i]);
+            Destroy(AllPlatforms[i], i < AllPlatforms.Count - 2 ? 1f : 5f);
         }
 
         AllPlatforms.Clear();

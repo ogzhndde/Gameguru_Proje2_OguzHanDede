@@ -103,6 +103,8 @@ public class CameraManager : InstanceManager<CameraManager>
         cMCamEnum = CMCam.CMFail;
 
         //LEAVE THE CAMERA TRACKING
+        var camZOffset = 12f;
+        CMFail.transform.position = new Vector3(CMFail.transform.position.x, CMFail.transform.position.y, PlayerManager.Instance.transform.position.z - camZOffset);
         CMFail.GetComponent<CinemachineVirtualCamera>().Follow = null;
     }
 

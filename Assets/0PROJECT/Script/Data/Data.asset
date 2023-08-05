@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f319133c54dbfe7498d689097b6a52fb, type: 3}
   m_Name: Data
   m_EditorClassIdentifier: 
-  totalCoin: 0
-  LevelCount: 2
+  totalCoin: 92
+  LevelCount: 8
   values:
-    perfectShootCounter: 1
-    LongestPerfectShoot: 3
+    perfectShootCounter: 0
+    LongestPerfectShoot: 6
   bools:
-    _isPerfectShoot: 1
+    _isPerfectShoot: 0
   lists:
     LevelPlatformCounts: 0500000006000000080000000c0000000f000000110000001400000016000000180000001a0000001c0000001e000000

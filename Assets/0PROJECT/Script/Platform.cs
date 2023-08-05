@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using DG.Tweening;
+using Random = UnityEngine.Random;
 
 public class Platform : MonoBehaviour
 {
@@ -23,12 +25,17 @@ public class Platform : MonoBehaviour
     [SerializeField] private bool _isStop = false;
     private bool _isForward;
 
+    
+    [Space(10)]
+    [Header("Others")]
+    public GameObject PlatformCollectable = null;
 
-    void Start()
+
+    IEnumerator Start()
     {
-
+        yield return new WaitForSeconds(0.2f);
+        SpawnCollectable();
     }
-
 
     void Update()
     {
@@ -55,11 +62,18 @@ public class Platform : MonoBehaviour
         #endregion
     }
 
+    //#########################      MATERIALS    #########################
+    public void SetRandomMaterial()
+    {
+        MaterialIndex = Random.Range(0, AllMaterials.Count);
+        GetComponent<MeshRenderer>().material = AllMaterials[MaterialIndex];
+    }
     void SetMaterial()
     {
         MaterialIndex = MaterialIndex < AllMaterials.Count - 1 ? MaterialIndex + 1 : 0;
         GetComponent<MeshRenderer>().material = AllMaterials[MaterialIndex];
     }
+
 
     //#########################      PROCESSES    #########################
     public void SpawnProcess(Direction comingSide)
@@ -89,5 +103,27 @@ public class Platform : MonoBehaviour
     public void DestroyProcess()
     {
         Destroy(gameObject);
+    }
+
+    public void PerfectShootProcess()
+    {
+        gameObject.LeanScale(transform.localScale * 1.1f, 0.3f).setEasePunch();
+    }
+
+
+
+    //#########################      COLLECTABLES    #########################
+
+    public void SpawnCollectable()
+    {
+        if (Random.value < 0.8f) return; //%20 PERCENT SPAWN COLLECTABLE
+        if(_isStop) return;
+
+        var collList = GameManager.Instance.Collectables;
+
+        GameObject collectable = Instantiate(collList[Random.Range(0, collList.Count)], transform.position + new Vector3(0, 1, 0), Quaternion.identity);
+        PlatformCollectable = collectable;
+
+        collectable.GetComponent<Collectable>().SetTarget(transform);
     }
 }

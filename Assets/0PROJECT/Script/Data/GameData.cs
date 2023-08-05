@@ -52,6 +52,7 @@ public class GameData : ScriptableObject
     [Button]
     void ResetData()
     {
+        TotalCoin = 0;
         LevelCount = 0;
         values.perfectShootCounter = 0;
         values.LongestPerfectShoot = 0;

@@ -23,6 +23,9 @@ public class GameManager : InstanceManager<GameManager>
     public bool _canDividePlatform = true;
     public bool _canCreatePlatform = true;
 
+    [Space(10)]
+    [Header("Lists")]
+    public List<GameObject> Collectables = new List<GameObject>();
 
     void Awake()
     {
