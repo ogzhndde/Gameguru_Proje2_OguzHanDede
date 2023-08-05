@@ -8,6 +8,7 @@ public enum GameEvent
     OnFail,
     OnFinish,
     OnNextLevel,
+    OnCollectCoin,
 
     OnGenerateLevel,
     OnPlatformListReset,

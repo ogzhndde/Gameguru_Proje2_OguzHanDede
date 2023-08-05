@@ -89,10 +89,6 @@ public class PlayerManager : InstanceManager<PlayerManager>
 
         //RESET CHILD ROTATION TO PREVENT THE CHILD FROM TRACKING
         ChildPlayer.transform.eulerAngles = Vector3.zero;
-        Debug.Log("rotayon sifirladim");
-        {
-            
-        }
     }
 
 }

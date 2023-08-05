@@ -177,7 +177,7 @@ public class DivideManager : InstanceManager<DivideManager>
         //DESTROY ALL PREVIOUS PLATFORMS EXCEPT LAST TWO FOR OPTIMIZATION
         for (int i = 0; i < AllPlatforms.Count; i++)
         {
-            Destroy(AllPlatforms[i], i < AllPlatforms.Count - 2 ? 1f : 5f);
+            Destroy(AllPlatforms[i], i < AllPlatforms.Count - 2 ? 1f : 10f);
         }
 
         AllPlatforms.Clear();

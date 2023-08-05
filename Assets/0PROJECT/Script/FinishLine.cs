@@ -41,12 +41,10 @@ public class FinishLine : MonoBehaviour
         float jumpY = manager.Player.transform.position.y;
         float jumpZ = StablePlatform.transform.position.z;
 
-        manager.Player.transform.DOJump(new Vector3(jumpX, jumpY, jumpZ), 1f, 1, 0.5f).OnComplete(() =>
-        {
-            EventManager.Broadcast(GameEvent.OnGenerateLevel);
-        });
+        manager.Player.transform.DOJump(new Vector3(jumpX, jumpY, jumpZ), 1f, 1, 0.5f);
 
         EventManager.Broadcast(GameEvent.OnPlatformListReset, NextLevelPlatform);
+            EventManager.Broadcast(GameEvent.OnGenerateLevel);
 
 
     }

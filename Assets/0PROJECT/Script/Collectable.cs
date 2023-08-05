@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Collectable : MonoBehaviour
 {
+    CollectableType collectableTypeEnum;
+
     [SerializeField] private Transform TargetPlatform;
     [SerializeField] private Transform Player;
 
@@ -44,7 +46,19 @@ public class Collectable : MonoBehaviour
         Instantiate(CollectableParticle, transform.position, Quaternion.identity);
         GameManager.Instance.data.TotalCoin += CollValue;
 
+        //PLAY SOUND DEPENDS ON COLLECTABLE TYPE
+        string sound;
+        sound = collectableTypeEnum switch{ CollectableType.Coin => "SoundCoin", CollectableType.Diamond => "SoundDiamond", CollectableType.Star => "SoundStar", _=> ""};
+        PlaySound(sound);
+
+        EventManager.Broadcast(GameEvent.OnCollectCoin);
+        
         Destroy(gameObject);
+    }
+
+    void PlaySound(string sound)
+    {
+        EventManager.Broadcast(GameEvent.OnPlaySound, sound);
     }
 
     void OnTriggerEnter(Collider other)

@@ -33,7 +33,8 @@ public class GameData : ScriptableObject
     public struct Values
     {
         public int perfectShootCounter;
-        public int LongestPerfectShoot;
+        public int HighScore;
+        public int LongestPerfectStreak;
     }
 
     [Serializable]
@@ -55,8 +56,10 @@ public class GameData : ScriptableObject
     {
         TotalCoin = 0;
         LevelCount = 0;
+        UILevelCount = 1;
         values.perfectShootCounter = 0;
-        values.LongestPerfectShoot = 0;
+        values.HighScore = 0;
+        values.LongestPerfectStreak = 0;
 
         bools._isPerfectShoot = false;
     }

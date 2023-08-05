@@ -32,6 +32,8 @@ public class AudioManager : MonoBehaviour
 
     private void OnPlaySound(object value)
     {
+        audioPlay.pitch = 1f;
+
         audioPlay.clip = Resources.Load<AudioClip>((string)value);
         audioPlay.PlayOneShot(audioPlay.clip);
     }

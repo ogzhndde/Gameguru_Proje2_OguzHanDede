@@ -15,4 +15,11 @@ public enum Direction
     Right
 }
 
+public enum CollectableType
+{
+    Coin,
+    Diamond,
+    Star
+}
+
 

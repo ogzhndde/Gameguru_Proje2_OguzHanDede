@@ -31,6 +31,7 @@ public class GameManager : InstanceManager<GameManager>
     {
         //MAKE FPS STABLE
         Application.targetFrameRate = 60;
+        data.values.perfectShootCounter = 0;
 
         Player = FindObjectOfType<PlayerManager>().gameObject;
     }
@@ -62,6 +63,11 @@ public class GameManager : InstanceManager<GameManager>
         {
             _canCreatePlatform = false;
         }
+
+        //CHECK HIGH SCORE AND SAVE
+        int highScore = data.values.HighScore;
+        int currentScore = normalShootCounter;
+        data.values.HighScore = currentScore > highScore ? currentScore : highScore;
     }
 
     private void ClearPreviousLevelValues()
@@ -79,6 +85,7 @@ public class GameManager : InstanceManager<GameManager>
     {
         EventManager.AddHandler(GameEvent.OnStart, OnStart);
         EventManager.AddHandler(GameEvent.OnFinish, OnFinish);
+        EventManager.AddHandler(GameEvent.OnFail, OnFail);
         EventManager.AddHandler(GameEvent.OnMissShoot, OnMissShoot);
         EventManager.AddHandler(GameEvent.OnNormalShoot, OnNormalShoot);
         EventManager.AddHandler(GameEvent.OnPerfectShoot, OnPerfectShoot);
@@ -89,6 +96,7 @@ public class GameManager : InstanceManager<GameManager>
     {
         EventManager.RemoveHandler(GameEvent.OnStart, OnStart);
         EventManager.RemoveHandler(GameEvent.OnFinish, OnFinish);
+        EventManager.RemoveHandler(GameEvent.OnFail, OnFail);
         EventManager.RemoveHandler(GameEvent.OnMissShoot, OnMissShoot);
         EventManager.RemoveHandler(GameEvent.OnNormalShoot, OnNormalShoot);
         EventManager.RemoveHandler(GameEvent.OnPerfectShoot, OnPerfectShoot);
@@ -102,11 +110,19 @@ public class GameManager : InstanceManager<GameManager>
     private void OnFinish()
     {
         _isGameStarted = false;
+        data.values.perfectShootCounter = 0;
+        EventManager.Broadcast(GameEvent.OnPlaySound, "SoundFinish");
+    }
+
+    private void OnFail()
+    {
+        EventManager.Broadcast(GameEvent.OnPlaySound, "SoundFail");
     }
 
     private void OnMissShoot()
     {
         _canDividePlatform = false;
+        EventManager.Broadcast(GameEvent.OnPlaySound, "SoundMiss");
     }
 
     private void OnNormalShoot()
@@ -115,7 +131,7 @@ public class GameManager : InstanceManager<GameManager>
         data.bools._isPerfectShoot = false;
         data.values.perfectShootCounter = 0;
 
-        EventManager.Broadcast(GameEvent.OnPlaySound, "SoundNormalShoot");
+        EventManager.Broadcast(GameEvent.OnPlaySound, "SoundNormal");
     }
 
     private void OnPerfectShoot()
@@ -124,13 +140,13 @@ public class GameManager : InstanceManager<GameManager>
         data.bools._isPerfectShoot = true;
         data.values.perfectShootCounter++;
 
-        //CHECK LONGEST PERFECT SHOOT RALLY AND SAVE
-        int longestRally = data.values.LongestPerfectShoot;
-        int currentRally = data.values.perfectShootCounter;
-        data.values.LongestPerfectShoot = currentRally > longestRally ? currentRally : longestRally;
+        //CHECK LONGEST PERFECT SHOOT STREAK AND SAVE
+        int longestStreak = data.values.LongestPerfectStreak;
+        int currentStreak = data.values.perfectShootCounter;
+        data.values.LongestPerfectStreak = currentStreak > longestStreak ? currentStreak : longestStreak;
 
-        float soundPitchValue = 1f - (data.values.perfectShootCounter * 0.1f);
-        EventManager.Broadcast(GameEvent.OnPlaySoundPitch, "SoundPerfectShoot", soundPitchValue < 0.1f ? 0.1f : soundPitchValue);
+        float soundPitchValue = 0.9f + (data.values.perfectShootCounter * 0.1f);
+        EventManager.Broadcast(GameEvent.OnPlaySoundPitch, "SoundPerfect", soundPitchValue > 2f ? 2f : soundPitchValue);
     }
 
     private void OnGenerateLevel()
@@ -144,5 +160,7 @@ public class GameManager : InstanceManager<GameManager>
         FinishLine.transform.DOMove(FinishLine.transform.position + new Vector3(0, -6.5f, 0), 2f).SetEase(Ease.OutExpo);
 
         ClearPreviousLevelValues();
+
+        EventManager.Broadcast(GameEvent.OnPlaySound, "SoundJump");
     }
 }
